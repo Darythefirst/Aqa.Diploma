@@ -30,7 +30,7 @@
 * Docker - программа для развертывания и управления приложениями в виртуальной среде. Необходим в т.ч для работы с симулятором банковских сервисов
 
 ### Установка и запуск
-Для запуска приложения необходимо клонировать [репозиторий]() к себе на ПК в терминале программы IntelliJ IDEA с помощью команды `git clone git@github.com:Darythefirst/Aqa.Diploma.git`
+Для запуска приложения необходимо клонировать [репозиторий](https://github.com/Darythefirst/Aqa.Diploma) к себе на ПК в терминале программы IntelliJ IDEA с помощью команды `git clone git@github.com:Darythefirst/Aqa.Diploma.git`
 
 ### Запуск приложения
 
@@ -60,5 +60,5 @@
 ## Документация
 
 * [План автоматизации](https://github.com/Darythefirst/Aqa.Diploma/blob/977d67002c536d9c5e1d5c4bb7357596a57b4af8/Plan.md);
-* [Отчет о тестировании]();
-* [Отчет об автоматизации]();
+* [Отчет о тестировании](https://github.com/Darythefirst/Aqa.Diploma/blob/4203f979d39af54721bfa73056ff28bffecef815/docs/Report.md);
+* [Отчет об автоматизации](https://github.com/Darythefirst/Aqa.Diploma/blob/4203f979d39af54721bfa73056ff28bffecef815/docs/Summary.md);
