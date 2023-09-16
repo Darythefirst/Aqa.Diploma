@@ -5,7 +5,6 @@ import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.*;
 import ru.netology.data.DataHelper;
 import ru.netology.data.SQLHelper;
-import ru.netology.page.PaymentPage;
 import ru.netology.page.TourPage;
 
 
@@ -44,9 +43,9 @@ public class TourPaymentTest {
         var validOwner = DataHelper.generateOwner();
         var validCode = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(validCard, validMonth, validYear, validOwner, validCode);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findNotification();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findNotification("Успешно");
         assertEquals(DataHelper.getFirstCardInfo().getCardStatus(), SQLHelper.getPaymentStatus());
     }
 
@@ -56,13 +55,13 @@ public class TourPaymentTest {
         var tourPage = new TourPage();
         var validCard = DataHelper.getFirstCardInfo().getCardNumber();
         var validMonth = DataHelper.generateValidMonth(0, "MM");
-        var validYear = DataHelper.generateYear(5, "yy");
-        var validOwner = DataHelper.generateOwner();
+        var validYear = DataHelper.generateYear(0, "yy");
+        var validOwner = DataHelper.generateDoubleLastNameOwner();
         var validCode = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(validCard, validMonth, validYear, validOwner, validCode);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findNotification();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findNotification("Успешно");
         assertEquals(DataHelper.getFirstCardInfo().getCardStatus(), SQLHelper.getPaymentStatus());
     }
 
@@ -73,12 +72,12 @@ public class TourPaymentTest {
         var validCard = DataHelper.getFirstCardInfo().getCardNumber();
         var validMonth = DataHelper.generateValidMonth(0, "MM");
         var validYear = DataHelper.generateYear(0, "yy");
-        var validOwner = "Anton Antonov-Ivanov";
+        var validOwner = DataHelper.generateDoubleLastNameOwner();
         var validCode = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(validCard, validMonth, validYear, validOwner, validCode);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findNotification();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findNotification("Успешно");
         assertEquals(DataHelper.getFirstCardInfo().getCardStatus(), SQLHelper.getPaymentStatus());
     }
 
@@ -89,12 +88,12 @@ public class TourPaymentTest {
         var validCard = DataHelper.getFirstCardInfo().getCardNumber();
         var validMonth = DataHelper.generateValidMonth(0, "MM");
         var validYear = DataHelper.generateYear(0, "yy");
-        var validOwner = "Anna-Maria Ivanova";
+        var validOwner = DataHelper.generateDoubleNameOwner();
         var validCode = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(validCard, validMonth, validYear, validOwner, validCode);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findNotification();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findNotification("Успешно");
         assertEquals(DataHelper.getFirstCardInfo().getCardStatus(), SQLHelper.getPaymentStatus());
     }
 
@@ -108,9 +107,9 @@ public class TourPaymentTest {
         var owner = DataHelper.generateOwner();
         var code = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findNotificationError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findNotification("Ошибка");
         assertEquals(DataHelper.getSecondCardInfo().getCardStatus(), SQLHelper.getPaymentStatus());
     }
 
@@ -118,105 +117,105 @@ public class TourPaymentTest {
     @DisplayName("Сценарий №6. Покупка тура при неполном вводе номера карты")
     void invalidCardShortNumber() {
         var tourPage = new TourPage();
-        var card = "4444 4444";
+        var card = DataHelper.getShortCardNumber();
         var month = DataHelper.generateValidMonth(0, "MM");
         var year = DataHelper.generateYear(0, "yy");
         var owner = DataHelper.generateOwner();
         var code = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findCardError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Неверный формат");
     }
 
     @Test
     @DisplayName("Сценарий №7. Покупка тура при вводе невалидного номера карты, состоящего из нулей")
     void invalidCardZeroNumber() {
         var tourPage = new TourPage();
-        var card = "0000 0000 0000 0000";
+        var card = DataHelper.generateZeroLetter(16);
         var month = DataHelper.generateValidMonth(0, "MM");
         var year = DataHelper.generateYear(0, "yy");
         var owner = DataHelper.generateOwner();
         var code = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findCardError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Неверный формат");
     }
 
     @Test
     @DisplayName("Сценарий №8. Покупка тура при вводе пробелов в поле ввода номера карты")
     void invalidSpaceCardNumber() {
         var tourPage = new TourPage();
-        var card = "  ";
+        var card = DataHelper.generateSpace(4);
         var month = DataHelper.generateValidMonth(0, "MM");
         var year = DataHelper.generateYear(0, "yy");
         var owner = DataHelper.generateOwner();
         var code = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findCardError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Неверный формат");
     }
 
     @Test
     @DisplayName("Сценарий №9. Покупка тура при вводе спецсимволов в поле ввода номера карты")
     void invalidSymbolCardNumber() {
         var tourPage = new TourPage();
-        var card = "%^&*";
+        var card = DataHelper.generateSymbol(2, 16);
         var month = DataHelper.generateValidMonth(0, "MM");
         var year = DataHelper.generateYear(0, "yy");
         var owner = DataHelper.generateOwner();
         var code = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findCardError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Неверный формат");
     }
 
     @Test
     @DisplayName("Сценарий №10. Покупка тура при вводе латинских букв в поле ввода номера карты")
     void invalidLatinLetterCardNumber() {
         var tourPage = new TourPage();
-        var card = "GH44 4444 4444 4441";
+        var card = DataHelper.generateRandomLatinLetter(8) + DataHelper.getShortCardNumber();
         var month = DataHelper.generateValidMonth(0, "MM");
         var year = DataHelper.generateYear(0, "yy");
         var owner = DataHelper.generateOwner();
         var code = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findCardError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Неверный формат");
     }
 
     @Test
     @DisplayName("Сценарий №11 Покупка тура при вводе русских букв в поле ввода номера карты")
     void invalidRussianLetterCardNumber() {
         var tourPage = new TourPage();
-        var card = "ПЧ44 4444 4444 4441";
+        var card = DataHelper.generateRandomRusLetter(8) + DataHelper.getShortCardNumber();
         var month = DataHelper.generateValidMonth(0, "MM");
         var year = DataHelper.generateYear(0, "yy");
         var owner = DataHelper.generateOwner();
         var code = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findCardError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Неверный формат");
     }
 
     @Test
     @DisplayName("Сценарий №12. Покупка тура при вводе дефиса в поле ввода номера карты")
     void invalidDashCardNumber() {
         var tourPage = new TourPage();
-        var card = "---- 4444 4444 4441";
+        var card = DataHelper.generateDash(8) + DataHelper.getShortCardNumber();
         var month = DataHelper.generateValidMonth(0, "MM");
         var year = DataHelper.generateYear(0, "yy");
         var owner = DataHelper.generateOwner();
         var code = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findCardError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Неверный формат");
     }
 
     @Test
@@ -229,9 +228,9 @@ public class TourPaymentTest {
         var owner = DataHelper.generateOwner();
         var code = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findMonthError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Неверно указан срок действия карты");
     }
 
     @Test
@@ -244,9 +243,9 @@ public class TourPaymentTest {
         var owner = DataHelper.generateOwner();
         var code = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findMonthError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Неверно указан срок действия карты");
     }
 
     @Test
@@ -254,14 +253,14 @@ public class TourPaymentTest {
     void invalidZeroMonth() {
         var tourPage = new TourPage();
         var card = DataHelper.getFirstCardInfo().getCardNumber();
-        var month = "0";
+        var month = DataHelper.generateZeroLetter(2);
         var year = DataHelper.generateYear(0, "yy");
         var owner = DataHelper.generateOwner();
         var code = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findMonthError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Неверно указан срок действия карты");
     }
 
     @Test
@@ -269,14 +268,14 @@ public class TourPaymentTest {
     void invalidRussianLetterMonth() {
         var tourPage = new TourPage();
         var card = DataHelper.getFirstCardInfo().getCardNumber();
-        var month = "ФЧ";
+        var month = DataHelper.generateRandomRusLetter(2);
         var year = DataHelper.generateYear(0, "yy");
         var owner = DataHelper.generateOwner();
         var code = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findMonthError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Неверный формат");
     }
 
     @Test
@@ -284,14 +283,14 @@ public class TourPaymentTest {
     void invalidLatinLetterMonth() {
         var tourPage = new TourPage();
         var card = DataHelper.getFirstCardInfo().getCardNumber();
-        var month = "GL";
+        var month = DataHelper.generateRandomLatinLetter(2);
         var year = DataHelper.generateYear(0, "yy");
         var owner = DataHelper.generateOwner();
         var code = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findMonthError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Неверный формат");
     }
 
     @Test
@@ -299,14 +298,14 @@ public class TourPaymentTest {
     void invalidSymbolMonth() {
         var tourPage = new TourPage();
         var card = DataHelper.getFirstCardInfo().getCardNumber();
-        var month = "%&";
+        var month = DataHelper.generateSymbol(2, 2);
         var year = DataHelper.generateYear(0, "yy");
         var owner = DataHelper.generateOwner();
         var code = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findMonthError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Неверный формат");
     }
 
     @Test
@@ -314,14 +313,14 @@ public class TourPaymentTest {
     void invalidDashMonth() {
         var tourPage = new TourPage();
         var card = DataHelper.getFirstCardInfo().getCardNumber();
-        var month = "--";
+        var month = DataHelper.generateDash(2);
         var year = DataHelper.generateYear(0, "yy");
         var owner = DataHelper.generateOwner();
         var code = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findMonthError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Неверный формат");
     }
 
     @Test
@@ -329,14 +328,14 @@ public class TourPaymentTest {
     void invalidSpaceMonth() {
         var tourPage = new TourPage();
         var card = DataHelper.getFirstCardInfo().getCardNumber();
-        var month = "  ";
+        var month = DataHelper.generateSpace(2);
         var year = DataHelper.generateYear(0, "yy");
         var owner = DataHelper.generateOwner();
         var code = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findMonthError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Неверный формат");
     }
 
     @Test
@@ -349,9 +348,9 @@ public class TourPaymentTest {
         var owner = DataHelper.generateOwner();
         var code = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findYearError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Истёк срок действия карты");
     }
 
     @Test
@@ -364,9 +363,9 @@ public class TourPaymentTest {
         var owner = DataHelper.generateOwner();
         var code = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findYearError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Неверно указан срок действия карты");
     }
 
     @Test
@@ -375,13 +374,13 @@ public class TourPaymentTest {
         var tourPage = new TourPage();
         var card = DataHelper.getFirstCardInfo().getCardNumber();
         var month = DataHelper.generateValidMonth(0, "MM");
-        var year = "ФН";
+        var year = DataHelper.generateRandomRusLetter(2);
         var owner = DataHelper.generateOwner();
         var code = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findYearError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Неверный формат");
     }
 
     @Test
@@ -390,13 +389,13 @@ public class TourPaymentTest {
         var tourPage = new TourPage();
         var card = DataHelper.getFirstCardInfo().getCardNumber();
         var month = DataHelper.generateValidMonth(0, "MM");
-        var year = "GF";
+        var year = DataHelper.generateRandomLatinLetter(2);
         var owner = DataHelper.generateOwner();
         var code = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findYearError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Неверный формат");
     }
 
     @Test
@@ -405,13 +404,13 @@ public class TourPaymentTest {
         var tourPage = new TourPage();
         var card = DataHelper.getFirstCardInfo().getCardNumber();
         var month = DataHelper.generateValidMonth(0, "MM");
-        var year = "%&";
+        var year = DataHelper.generateSymbol(2, 2);
         var owner = DataHelper.generateOwner();
         var code = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findYearError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Неверный формат");
     }
 
     @Test
@@ -420,13 +419,13 @@ public class TourPaymentTest {
         var tourPage = new TourPage();
         var card = DataHelper.getFirstCardInfo().getCardNumber();
         var month = DataHelper.generateValidMonth(0, "MM");
-        var year = "--";
+        var year = DataHelper.generateDash(2);
         var owner = DataHelper.generateOwner();
         var code = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findYearError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Неверный формат");
     }
 
     @Test
@@ -435,13 +434,13 @@ public class TourPaymentTest {
         var tourPage = new TourPage();
         var card = DataHelper.getFirstCardInfo().getCardNumber();
         var month = DataHelper.generateValidMonth(0, "MM");
-        var year = "  ";
+        var year = DataHelper.generateSpace(2);
         var owner = DataHelper.generateOwner();
         var code = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findYearError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Неверный формат");
     }
 
     @Test
@@ -451,12 +450,12 @@ public class TourPaymentTest {
         var card = DataHelper.getFirstCardInfo().getCardNumber();
         var month = DataHelper.generateValidMonth(0, "MM");
         var year = DataHelper.generateYear(0, "yy");
-        var owner = DataHelper.generateInvalidOwner(1);
+        var owner = DataHelper.generateRandomLatinLetter(1);
         var code = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findOwnerError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Поле должно содержать от 2 до 64 латинских букв");
     }
 
     @Test
@@ -466,12 +465,12 @@ public class TourPaymentTest {
         var card = DataHelper.getFirstCardInfo().getCardNumber();
         var month = DataHelper.generateValidMonth(0, "MM");
         var year = DataHelper.generateYear(0, "yy");
-        var owner = DataHelper.generateInvalidOwner(65);
+        var owner = DataHelper.generateRandomLatinLetter(65);
         var code = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findOwnerError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Поле должно содержать от 2 до 64 латинских букв");
     }
 
     @Test
@@ -484,9 +483,9 @@ public class TourPaymentTest {
         var owner = DataHelper.generateRussianOwner();
         var code = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findOwnerError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Поле должно содержать от 2 до 64 латинских букв");
     }
 
     @Test
@@ -496,12 +495,12 @@ public class TourPaymentTest {
         var card = DataHelper.getFirstCardInfo().getCardNumber();
         var month = DataHelper.generateValidMonth(0, "MM");
         var year = DataHelper.generateYear(0, "yy");
-        var owner = "-" + DataHelper.generateOwner();
+        var owner = DataHelper.generateDash(1) + DataHelper.generateOwner();
         var code = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findOwnerError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Дефис не может стоять перед/после имени/фамилии");
     }
 
     @Test
@@ -511,12 +510,12 @@ public class TourPaymentTest {
         var card = DataHelper.getFirstCardInfo().getCardNumber();
         var month = DataHelper.generateValidMonth(0, "MM");
         var year = DataHelper.generateYear(0, "yy");
-        var owner = "Darya- Ivanova";
+        var owner = DataHelper.generateDashAfterNameOwner();
         var code = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findOwnerError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Дефис не может стоять перед/после имени/фамилии");
     }
 
     @Test
@@ -526,12 +525,12 @@ public class TourPaymentTest {
         var card = DataHelper.getFirstCardInfo().getCardNumber();
         var month = DataHelper.generateValidMonth(0, "MM");
         var year = DataHelper.generateYear(0, "yy");
-        var owner = "Darya -Ivanova";
+        var owner = DataHelper.generateDashBeforeLastNameOwner();
         var code = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findOwnerError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Дефис не может стоять перед/после имени/фамилии");
     }
 
     @Test
@@ -541,12 +540,12 @@ public class TourPaymentTest {
         var card = DataHelper.getFirstCardInfo().getCardNumber();
         var month = DataHelper.generateValidMonth(0, "MM");
         var year = DataHelper.generateYear(0, "yy");
-        var owner = DataHelper.generateOwner() + "-";
+        var owner = DataHelper.generateOwner() + DataHelper.generateDash(1);
         var code = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findOwnerError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Дефис не может стоять перед/после имени/фамилии");
     }
 
     @Test
@@ -559,9 +558,9 @@ public class TourPaymentTest {
         var owner = DataHelper.generateOwner() + DataHelper.generateSecurityCode(3, true);
         var code = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findOwnerError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Поле должно содержать от 2 до 64 латинских букв");
     }
 
     @Test
@@ -571,12 +570,12 @@ public class TourPaymentTest {
         var card = DataHelper.getFirstCardInfo().getCardNumber();
         var month = DataHelper.generateValidMonth(0, "MM");
         var year = DataHelper.generateYear(0, "yy");
-        var owner = "%^&*";
+        var owner = DataHelper.generateSymbol(2, 64);
         var code = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findOwnerError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Поле должно содержать от 2 до 64 латинских букв");
     }
 
     @Test
@@ -586,12 +585,12 @@ public class TourPaymentTest {
         var card = DataHelper.getFirstCardInfo().getCardNumber();
         var month = DataHelper.generateValidMonth(0, "MM");
         var year = DataHelper.generateYear(0, "yy");
-        var owner = "  ";
+        var owner = DataHelper.generateSpace(5);
         var code = DataHelper.generateSecurityCode(3, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findOwnerError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Поле обязательно для заполнения");
     }
 
     @Test
@@ -604,9 +603,9 @@ public class TourPaymentTest {
         var owner = DataHelper.generateOwner();
         var code = DataHelper.generateSecurityCode(2, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findCardCodeError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Неверный формат");
     }
 
     @Test
@@ -619,9 +618,9 @@ public class TourPaymentTest {
         var owner = DataHelper.generateOwner();
         var code = DataHelper.generateSecurityCode(4, true);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findCardCodeError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Неверный формат");
     }
 
     @Test
@@ -632,11 +631,11 @@ public class TourPaymentTest {
         var month = DataHelper.generateValidMonth(0, "MM");
         var year = DataHelper.generateYear(0, "yy");
         var owner = DataHelper.generateOwner();
-        var code = "%^&";
+        var code = DataHelper.generateSymbol(3, 3);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findCardCodeError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Неверный формат");
     }
 
     @Test
@@ -647,11 +646,11 @@ public class TourPaymentTest {
         var month = DataHelper.generateValidMonth(0, "MM");
         var year = DataHelper.generateYear(0, "yy");
         var owner = DataHelper.generateOwner();
-        var code = "---";
+        var code = DataHelper.generateDash(3);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findCardCodeError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Неверный формат");
     }
 
     @Test
@@ -662,11 +661,11 @@ public class TourPaymentTest {
         var month = DataHelper.generateValidMonth(0, "MM");
         var year = DataHelper.generateYear(0, "yy");
         var owner = DataHelper.generateOwner();
-        var code = "   ";
+        var code = DataHelper.generateSpace(3);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findCardCodeError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Неверный формат");
     }
 
     @Test
@@ -677,11 +676,11 @@ public class TourPaymentTest {
         var month = DataHelper.generateValidMonth(0, "MM");
         var year = DataHelper.generateYear(0, "yy");
         var owner = DataHelper.generateOwner();
-        var code = DataHelper.generateInvalidOwner(3);
+        var code = DataHelper.generateRandomLatinLetter(3);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findCardCodeError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Неверный формат");
     }
 
     @Test
@@ -692,11 +691,11 @@ public class TourPaymentTest {
         var month = DataHelper.generateValidMonth(0, "MM");
         var year = DataHelper.generateYear(0, "yy");
         var owner = DataHelper.generateOwner();
-        var code = "ЯПУ";
+        var code = DataHelper.generateRandomRusLetter(3);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findCardCodeError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Неверный формат");
     }
 
     @Test
@@ -707,11 +706,11 @@ public class TourPaymentTest {
         var month = DataHelper.generateValidMonth(0, "MM");
         var year = DataHelper.generateYear(0, "yy");
         var owner = DataHelper.generateOwner();
-        var code = "000";
+        var code = DataHelper.generateZeroLetter(3);
         DataHelper.OwnerCardInfo ownerCardInfo = new DataHelper.OwnerCardInfo(card, month, year, owner, code);
-        tourPage.clickBuyButton().orderTourPayment(ownerCardInfo);
-        var paymentPage = new PaymentPage();
-        paymentPage.findCardCodeError();
+        var paymentPage = tourPage.clickBuyButton();
+        paymentPage.orderTourPayment(ownerCardInfo);
+        paymentPage.findError("Неверный формат");
     }
 
 }

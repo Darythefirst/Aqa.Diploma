@@ -4,12 +4,17 @@ import com.github.javafaker.Faker;
 import lombok.Value;
 import org.apache.commons.lang3.RandomStringUtils;
 
+import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.Random;
 
 
 public class DataHelper {
+    private static final Random RND = new SecureRandom();
+    private static final String rusLetter = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
+
     public DataHelper() {
     }
 
@@ -32,10 +37,15 @@ public class DataHelper {
         return new CardInfo("4444 4444 4444 4442", "DECLINED");
     }
 
+
     @Value
     public static class CardInfo {
         String cardNumber;
         String cardStatus;
+    }
+
+    public static String getShortCardNumber() {
+        return ("4444 4441");
     }
 
     public static String generateValidMonth(int shift, String pattern) {
@@ -51,11 +61,7 @@ public class DataHelper {
     }
 
     public static String generateOwner() {
-        return faker.name().firstName() + " " + faker.name().lastName();
-    }
-
-    public static String generateInvalidOwner(int length) {
-        return RandomStringUtils.randomAlphabetic(length);
+        return faker.name().firstName().replaceAll("[^A-Za-z]", "") + " " + faker.name().lastName().replaceAll("[^A-Za-z]", "");
     }
 
     public static String generateRussianOwner() {
@@ -63,8 +69,48 @@ public class DataHelper {
         return faker1.name().firstName() + " " + faker1.name().lastName();
     }
 
+    public static String generateDoubleNameOwner() {
+        return faker.name().firstName() + "-" + faker.name().firstName() + " " + faker.name().lastName();
+    }
+
+    public static String generateDoubleLastNameOwner() {
+        return faker.name().firstName() + " " + faker.name().lastName() + "-" + faker.name().lastName();
+    }
+
+    public static String generateDashAfterNameOwner() {
+        return faker.name().firstName() + "-" + " " + faker.name().lastName();
+    }
+
+    public static String generateDashBeforeLastNameOwner() {
+        return faker.name().firstName() + " " + "-" + faker.name().lastName();
+    }
+
     public static String generateSecurityCode(int digits, boolean strict) {
         return String.valueOf(faker.number().randomNumber(digits, strict));
+    }
+
+    public static String generateSymbol(int min, int max) {
+        return RandomStringUtils.randomAscii(min, max);
+    }
+
+    public static String generateDash(int length) {
+        return RandomStringUtils.randomAlphabetic(length).replaceAll("[A-Za-z]", "-");
+    }
+
+    public static String generateSpace(int length) {
+        return RandomStringUtils.randomAlphabetic(length).replaceAll("[A-Za-z]", " ");
+    }
+
+    public static String generateRandomRusLetter(int length) {
+        return RandomStringUtils.random(length, "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ");
+    }
+
+    public static String generateZeroLetter(int length) {
+        return RandomStringUtils.random(length, "0");
+    }
+
+    public static String generateRandomLatinLetter(int length) {
+        return RandomStringUtils.randomAlphabetic(length);
     }
 
 }

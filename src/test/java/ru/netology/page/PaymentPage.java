@@ -5,6 +5,7 @@ import ru.netology.data.DataHelper;
 
 import java.time.Duration;
 
+import static com.codeborne.selenide.Condition.ownText;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selectors.withText;
@@ -18,13 +19,8 @@ public class PaymentPage {
     private SelenideElement cardOwner = $(byText("Владелец")).parent().$("input");
     private SelenideElement cardCode = $("input[placeholder='999']");
     private SelenideElement contButton = $(byText("Продолжить"));
-    private SelenideElement cardError = $(byText("Номер карты")).parent().$(".input__sub");
-    private SelenideElement monthError = $(withText("Месяц")).parent().$(".input__sub");
-    private SelenideElement yearError = $(withText("Год")).parent().$(".input__sub");
-    private SelenideElement cardOwnerError = $(withText("Владелец")).parent().$(".input__sub");
-    private SelenideElement cardCodeError = $(withText("CVC/CVV")).parent().$(".input__sub");
-    private SelenideElement notification = $(".notification_status_ok");
-    private SelenideElement notificationError = $(".notification_status_error");
+    private SelenideElement error = $(".input__sub");
+    private SelenideElement notification = $(".notification__title");
 
     public PaymentPage() {
         payment.shouldBe(visible, Duration.ofSeconds(15));
@@ -39,31 +35,11 @@ public class PaymentPage {
         contButton.click();
     }
 
-    public void findNotification() {
-        notification.shouldBe(visible, Duration.ofSeconds(15));
+    public void findNotification(String expectedText) {
+        notification.should(ownText(expectedText)).shouldBe(visible, Duration.ofSeconds(15));
     }
 
-    public void findNotificationError() {
-        notificationError.shouldBe(visible, Duration.ofSeconds(15));
-    }
-
-    public void findCardError() {
-        cardError.shouldBe(visible, Duration.ofSeconds(15));
-    }
-
-    public void findMonthError() {
-        monthError.shouldBe(visible, Duration.ofSeconds(15));
-    }
-
-    public void findYearError() {
-        yearError.shouldBe(visible, Duration.ofSeconds(15));
-    }
-
-    public void findOwnerError() {
-        cardOwnerError.shouldBe(visible, Duration.ofSeconds(15));
-    }
-
-    public void findCardCodeError() {
-        cardCodeError.shouldBe(visible, Duration.ofSeconds(15));
+    public void findError(String expectedText) {
+        error.should(ownText(expectedText)).shouldBe(visible);
     }
 }
